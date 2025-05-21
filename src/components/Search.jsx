@@ -3,12 +3,10 @@ import React from "react"
 const Search = ({ searchTerm, setSearchTerm }) => {
   return (
     <div className="search">
-      <img src="./public/search.svg" alt="search" />
-      <input
-      type = "text"
-      placeholder="Search through thousands of movies"
-      value = {searchTerm}
-      onChange = {(event)=>setSearchTerm(event.target.value)}/>
+      <div>
+        <img src="./public/search.svg" alt="search" />
+        <input type="text" placeholder="Search through thousands of movies" value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} />
+      </div>
     </div>
   )
 } //we should never mutate props or state
