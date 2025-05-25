@@ -1,5 +1,7 @@
 # React + Vite
 
+The main goal of this project is to make it available for user to add anime exclusive for personal anime rating and experience but for now it is being designed as a movie website as a base website
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:

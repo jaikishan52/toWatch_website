@@ -1,6 +1,7 @@
 import React from "react"
 import { useEffect } from "react"
 import { useState } from "react"
+import MovieCard from "./components/MovieCard"
 import Search from "./components/Search"
 import Spinner from "./components/Spinner"
 
@@ -77,9 +78,11 @@ const App = () => {
               {/* when we are trying to delete about particular movie or something we 
               need to point it out to the particular id so good to maintain a key */}
               {movieList.map((movie) => (
-                <p key={movie.id} className="text-white">
-                  {movie.title}{" "}
-                </p>
+                // <p key={movie.id} className="text-white">
+                //   {movie.title}{" "}
+                // </p>
+                <MovieCard key={movie.id} movie={movie} />
+                
               ))}
             </ul>
           )}
