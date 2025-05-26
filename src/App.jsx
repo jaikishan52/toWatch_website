@@ -4,6 +4,7 @@ import { useState } from "react"
 import MovieCard from "./components/MovieCard"
 import Search from "./components/Search"
 import Spinner from "./components/Spinner"
+import { useDebounce } from "react-use"
 
 const API_BASE_URL = "https://api.themoviedb.org/3"
 
@@ -27,11 +28,17 @@ const App = () => {
 
   const [isLoading, setIsLoading] = useState(false)
 
-  const fetchMovies = async () => {
+  const [debounceSearchterm, setDebouncedSearchTerm] = useState("")
+  //It debounces the search term making too many API requests
+  //By waiting for the user to stop typing for 500 ms
+  useDebounce(() => setDebouncedSearchTerm(searchTerm), 500, [searchTerm])
+
+  //concept of debouncing will be used
+  const fetchMovies = async (query = "") => {
     setIsLoading(true)
     setErrorMessage("")
     try {
-      const endpoint = `${API_BASE_URL}/discover/movie?sort_by=popularity.desc`
+      const endpoint = query ? `${API_BASE_URL}/search/movie?query=${encodeURIComponent(query)}?` : `${API_BASE_URL}/discover/movie?sort_by=popularity.desc`
       const response = await fetch(endpoint, API_OPTIONS) //make https requests , get the data from apis
       if (!response.ok) {
         throw new Error("Failed to fetch movies")
@@ -53,15 +60,15 @@ const App = () => {
   }
 
   useEffect(() => {
-    fetchMovies()
-  }, [])
+    fetchMovies(debounceSearchterm)
+  }, [debounceSearchterm])
 
   return (
     <div>
       <div className="pattern" />
       <div className="wrapper">
         <header>
-          <img src="./public/hero-img.png" alt="Hero Banner" />
+          <img src="/hero-img.png" alt="Hero Banner" />
           <h1>
             Find <span className="text-gradient">Movies </span>You'll Enjoy Without the Hassle
           </h1>
@@ -82,7 +89,6 @@ const App = () => {
                 //   {movie.title}{" "}
                 // </p>
                 <MovieCard key={movie.id} movie={movie} />
-                
               ))}
             </ul>
           )}
