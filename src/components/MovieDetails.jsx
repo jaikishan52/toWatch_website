@@ -27,7 +27,7 @@ const MovieDetails = ({ movie, onBack }) => {
             <span>•</span>
             <span>{release_date?.split("-")[0] || "N/A"}</span>
           </div>
-
+          <p className="overview-heading">Overview</p>
           <p className="overview">{overview || "No description available."}</p>
         </div>
       </div>

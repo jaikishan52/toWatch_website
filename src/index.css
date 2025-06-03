@@ -158,6 +158,9 @@
     & .overview {
       @apply text-light-100 leading-relaxed;
     }
+    & .overview-heading {
+      @apply text-light-200 text-sm tracking-wide mb-2;
+    }
   }
 }
 

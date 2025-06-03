@@ -107,20 +107,23 @@ const App = () => {
             <section className="trending">
               <h2>Trending Movies</h2>
               <ul>
-                {trendingMovies.map((movie, index) => {
-                  const matchingMovie = movieList.find((m) => {
-                    console.log("Comparing m.id:", m.id, "| movie.movie_id:", movie.movie_id)
-                    return m.id === Number(movie.movie_id)
-                  })
+                {trendingMovies.map((movie, index) => (
+                  <li
+                    key={movie.$id}
+                    onClick={async () => {
+                      const matchingMovie = movieList.find((m) => m.id === Number(movie.movie_id))
 
-                  return (
-                    <li
-                      key={movie.$id}
-                      onClick={() => {
-                        if (matchingMovie) {
-                          setSelectedMovie(matchingMovie)
-                        } else {
-                          // fallback: partial object from trendingMovies
+                      if (matchingMovie) {
+                        setSelectedMovie(matchingMovie)
+                      } else {
+                        try {
+                          const response = await fetch(`${API_BASE_URL}/movie/${movie.movie_id}`, API_OPTIONS)
+                          if (!response.ok) throw new Error("Movie fetch failed")
+
+                          const data = await response.json()
+                          setSelectedMovie(data)
+                        } catch (err) {
+                          console.error("Could not fetch movie by ID:", err)
 
                           setSelectedMovie({
                             id: movie.movie_id,
@@ -132,13 +135,13 @@ const App = () => {
                             overview: movie.overview || "Overview not available",
                           })
                         }
-                      }}
-                    >
-                      <p>{index + 1}</p>
-                      <img src={movie.poster_url} alt={movie.title || "Movie"} className="cursor-pointer hover:opacity-80 transition" />
-                    </li>
-                  )
-                })}
+                      }
+                    }}
+                  >
+                    <p>{index + 1}</p>
+                    <img src={movie.poster_url} alt={movie.title || "Movie"} className="cursor-pointer hover:opacity-80 transition" />
+                  </li>
+                ))}
               </ul>
             </section>
 
