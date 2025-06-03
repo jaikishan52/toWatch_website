@@ -11,7 +11,7 @@ const MovieCard = ({ movie: { title, vote_average, poster_path, release_date, or
         <h3>{title}</h3>
         <div className="content">
           <div className="rating">
-            <img src="/star.svg" />
+            <img src="/toWatch_website/star.svg" />
             {/* here it toFixed converts the following decimal value into 1 or 2 or 3 valued decimal*/}
             <p>{vote_average ? vote_average.toFixed(1) : "N/A"}</p>
           </div>

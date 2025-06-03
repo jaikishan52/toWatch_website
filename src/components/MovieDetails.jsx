@@ -19,7 +19,7 @@ const MovieDetails = ({ movie, onBack }) => {
 
           <div className="metadata">
             <div className="flex items-center gap-1">
-              <img src="/star.svg" alt="rating" className="w-5 h-5" />
+              <img src="/toWatch_website/star.svg" alt="rating" className="w-5 h-5" />
               <span>{vote_average ? vote_average.toFixed(1) : "N/A"}</span>
             </div>
             <span>•</span>
