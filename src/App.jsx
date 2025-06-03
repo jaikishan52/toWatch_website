@@ -6,6 +6,7 @@ import Search from "./components/Search"
 import Spinner from "./components/Spinner"
 import { useDebounce } from "react-use"
 import { getTrendingMovies, updateSearchCount } from "./appwrite"
+import MovieDetails from "./components/MovieDetails"
 
 const API_BASE_URL = "https://api.themoviedb.org/3"
 
@@ -32,6 +33,9 @@ const App = () => {
   const [debounceSearchterm, setDebouncedSearchTerm] = useState("")
 
   const [trendingMovies, setTrendingMovies] = useState([])
+
+  const [selectedMovie, setSelectedMovie] = useState(null)
+
   //It debounces the search term making too many API requests
   //By waiting for the user to stop typing for 500 ms
   useDebounce(() => setDebouncedSearchTerm(searchTerm), 500, [searchTerm])
@@ -88,48 +92,74 @@ const App = () => {
     <div>
       <div className="pattern" />
       <div className="wrapper">
-        <header>
-          <img src="/hero-img.png" alt="Hero Banner" />
-          <h1>
-            Find <span className="text-gradient">Movies </span>You'll Enjoy Without the Hassle
-          </h1>
-          <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-        </header>
+        {selectedMovie ? (
+          <MovieDetails movie={selectedMovie} onBack={() => setSelectedMovie(null)} />
+        ) : (
+          <>
+            <header>
+              <img src="/hero-img.png" alt="Hero Banner" />
+              <h1>
+                Find <span className="text-gradient">Movies </span>You'll Enjoy Without the Hassle
+              </h1>
+              <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+            </header>
 
-        {trendingMovies.length > 0 && (
-          <section className="trending">
-            <h2>Trending Movies</h2>
-            <ul>
-              {console.log("TrendingMoviese" + trendingMovies)}
-              {trendingMovies.map((movie, index) => (
-                <li key={movie.$id}>
-                  <p>{index + 1}</p>
-                  <img src={movie.poster_url} alt={movie.title}></img>
-                </li>
-              ))}
-            </ul>
-          </section>
+            <section className="trending">
+              <h2>Trending Movies</h2>
+              <ul>
+                {trendingMovies.map((movie, index) => {
+                  const matchingMovie = movieList.find((m) => {
+                    console.log("Comparing m.id:", m.id, "| movie.movie_id:", movie.movie_id)
+                    return m.id === Number(movie.movie_id)
+                  })
+
+                  return (
+                    <li
+                      key={movie.$id}
+                      onClick={() => {
+                        if (matchingMovie) {
+                          setSelectedMovie(matchingMovie)
+                        } else {
+                          // fallback: partial object from trendingMovies
+
+                          setSelectedMovie({
+                            id: movie.movie_id,
+                            title: movie.title || "Unknown Title",
+                            poster_path: movie.poster_url?.replace("https://image.tmdb.org/t/p/w500/", "") || null,
+                            vote_average: movie.vote_average || 0,
+                            release_date: movie.release_date || "N/A",
+                            original_language: movie.original_language || "en",
+                            overview: movie.overview || "Overview not available",
+                          })
+                        }
+                      }}
+                    >
+                      <p>{index + 1}</p>
+                      <img src={movie.poster_url} alt={movie.title || "Movie"} className="cursor-pointer hover:opacity-80 transition" />
+                    </li>
+                  )
+                })}
+              </ul>
+            </section>
+
+            <section className="all-movies">
+              <h2>All Movies</h2>
+              {isLoading ? (
+                <Spinner />
+              ) : errorMessage ? (
+                <p className="text-red-500">{errorMessage}</p>
+              ) : (
+                <ul>
+                  {movieList.map((movie) => (
+                    <li key={movie.id} onClick={() => setSelectedMovie(movie)}>
+                      <MovieCard movie={movie} />
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </section>
+          </>
         )}
-
-        <section className="all-movies">
-          <h2>All Movies</h2>
-          {isLoading ? (
-            <Spinner />
-          ) : errorMessage ? (
-            <p className="text-red-500">{errorMessage}</p>
-          ) : (
-            <ul>
-              {/* when we are trying to delete about particular movie or something we 
-              need to point it out to the particular id so good to maintain a key */}
-              {movieList.map((movie) => (
-                // <p key={movie.id} className="text-white">
-                //   {movie.title}{" "}
-                // </p>
-                <MovieCard key={movie.id} movie={movie} />
-              ))}
-            </ul>
-          )}
-        </section>
       </div>
     </div>
   )

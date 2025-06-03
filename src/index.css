@@ -140,6 +140,25 @@
       @apply text-gray-100 font-medium text-base;
     }
   }
+  .movie-details {
+    @apply px-5 py-12 xs:p-10 max-w-7xl mx-auto flex flex-col relative z-10 mt-10 text-white;
+
+    & img {
+      @apply rounded-lg w-full max-w-sm;
+    }
+
+    & h2 {
+      @apply text-3xl font-bold mb-4;
+    }
+
+    & .metadata {
+      @apply flex items-center gap-4 text-light-200 text-sm mb-4;
+    }
+
+    & .overview {
+      @apply text-light-100 leading-relaxed;
+    }
+  }
 }
 
 @utility text-gradient {
